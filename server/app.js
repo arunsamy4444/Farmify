@@ -9,13 +9,23 @@ const paymentRoutes = require('./routes/paymentRoutes');
 require('dotenv').config();
 
 const app = express();
-app.use(cors());
+// ✅ CORS Setup: Only allow frontend from Vercel or localhost
+const allowedOrigins = [
+  'https://farmify-tau.vercel.app',
+  'http://localhost:3000'
+];
 
-app.use(cors({ origin: 'http://localhost:3000' }));
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
 
-
-// app.options('*', cors(corsOptions)); 
-app.use(cors({ origin: '*' }));
 
 app.use(express.json());
 
