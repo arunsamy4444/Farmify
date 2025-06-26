@@ -8,6 +8,8 @@ const buyerRoutes = require('./routes/buyerRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 require('dotenv').config();
 
+
+
 const app = express();
 // ✅ CORS Setup: Only allow frontend from Vercel or localhost
 const allowedOrigins = [
@@ -45,5 +47,6 @@ app.use('/buyer', buyerRoutes);
 app.use('/payment', paymentRoutes);
 
 // Start Server
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
