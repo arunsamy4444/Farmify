@@ -52,8 +52,10 @@ router.get('/products', async (req, res) => {
         const products = await Product.find();
         const updatedProducts = products.map(product => ({
             ...product._doc,
-            picture: product.picture ? `http://localhost:5000/uploads/${product.picture}` : null
-        }));
+        picture: product.picture
+        ? `https://farmify-api.onrender.com/uploads/${product.picture}`
+        : null,
+    }));
         res.status(200).json({ products: updatedProducts });
     } catch (err) {
         res.status(500).json({ error: err.message });
