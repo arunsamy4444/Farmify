@@ -8,8 +8,6 @@ const buyerRoutes = require('./routes/buyerRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 require('dotenv').config();
 
-
-
 const app = express();
 // ✅ CORS Setup: Only allow frontend from Vercel or localhost
 const allowedOrigins = [
@@ -32,7 +30,9 @@ app.use(cors({
 app.use(express.json());
 
 // Serve static files from the 'uploads' directory
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use("/uploads", express.static("uploads"));
+
 
 mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
