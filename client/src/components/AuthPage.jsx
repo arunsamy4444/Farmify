@@ -25,7 +25,7 @@ const AuthPage = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5000/auth/login', { email, password });
+        const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/auth/login`, { email, password });
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('role', response.data.user.role);
             localStorage.setItem('user', JSON.stringify(response.data.user));
@@ -48,7 +48,7 @@ const AuthPage = () => {
         }
 
         try {
-            await axios.post('http://localhost:5000/auth/signup', formData, {
+            await axios.post(`${process.env.REACT_APP_BASE_URL}/auth/signup`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
             toast.success('Signup successful! Logging in... 🎉');
@@ -220,71 +220,6 @@ const AuthPage = () => {
   </div>
 );
 
-        // <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
-        //     <div className="w-full max-w-md p-6 bg-white shadow-md rounded-lg">
-        //         <h2 className="text-2xl font-semibold text-center mb-4">{isSignup ? 'Signup' : 'Login'}</h2>
-        //         {error && <p className="text-red-500 text-sm text-center mb-2">{error}</p>}
-        //         <form onSubmit={isSignup ? handleSignup : handleLogin} className="space-y-4">
-        //             {isSignup && (
-        //                 <>
-        //                     <input
-        //                         type="text"
-        //                         placeholder="Name"
-        //                         value={name}
-        //                         onChange={(e) => setName(e.target.value)}
-        //                         required
-        //                         className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
-        //                     />
-        //                     <input
-        //                         type="file"
-        //                         accept="image/*"
-        //                         onChange={(e) => setProfilePic(e.target.files[0])}
-        //                         className="w-full px-3 py-2 border rounded-md"
-        //                     />
-        //                 </>
-        //             )}
-        //             <input
-        //                 type="email"
-        //                 placeholder="Email"
-        //                 value={email}
-        //                 onChange={(e) => setEmail(e.target.value)}
-        //                 required
-        //                 className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
-        //             />
-        //             <input
-        //                 type="password"
-        //                 placeholder="Password"
-        //                 value={password}
-        //                 onChange={(e) => setPassword(e.target.value)}
-        //                 required
-        //                 className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
-        //             />
-        //             {isSignup && (
-        //                 <select
-        //                     value={role}
-        //                     onChange={(e) => setRole(e.target.value)}
-        //                     className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
-        //                 >
-        //                     <option value="customer">Customer</option>
-        //                     <option value="admin">Admin</option>
-        //                 </select>
-        //             )}
-        //             <button
-        //                 type="submit"
-        //                 className="w-full px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 transition"
-        //             >
-        //                 {isSignup ? 'Signup' : 'Login'}
-        //             </button>
-        //         </form>
-        //         <button
-        //             onClick={() => setIsSignup(!isSignup)}
-        //             className="w-full mt-4 text-blue-600 hover:underline text-sm"
-        //         >
-        //             {isSignup ? 'Already have an account? Login' : "Don't have an account? Signup"}
-        //         </button>
-        //     </div>
-        //     <ToastContainer position="top-right" autoClose={2000} hideProgressBar />
-        // </div>
 };
 
 export default AuthPage;

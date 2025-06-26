@@ -38,12 +38,12 @@ const BuyerDashboard = () => {
     if (!userId) return;
 
     axios
-      .get("http://localhost:5000/buyer/getallproducts")
+       .get(`${process.env.REACT_APP_BASE_URL}/buyer/getallproducts`)
       .then((response) => setProducts(response.data.products))
       .catch((error) =>  toast.error("Error fetching products"));
 
     axios
-      .get(`http://localhost:5000/buyer/getorder/${userId}`, {
+      .get(`${process.env.REACT_APP_BASE_URL}/buyer/getorder/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => setOrders(response.data.orders || []))
@@ -54,7 +54,7 @@ const BuyerDashboard = () => {
     picture
       ? picture.startsWith("http")
         ? picture
-        : `http://localhost:5000/uploads/${picture}`
+        : `${process.env.REACT_APP_BASE_URL}/uploads/${picture}`
       : "default-image-path.jpg";
 
   const selectProduct = (product) => {
@@ -108,7 +108,7 @@ const BuyerDashboard = () => {
     
     axios
       .post(
-        "http://localhost:5000/buyer/placeorder",
+       `${process.env.REACT_APP_BASE_URL}/buyer/placeorder`,
         { orderItems: orderData, address, targetName: "Default Target"  },
         { headers: { Authorization: `Bearer ${token}` } }
       )
@@ -144,13 +144,7 @@ const BuyerDashboard = () => {
     navigate(`/payment/${userId}/${orderId}?total=${totalOrderPrice}`);
   };
   
-  // const goToPayment = () => {
-  //   if (!orderId || !userId) {
-  //     alert("No order found for payment");
-  //     return;
-  //   }
-  //   navigate(`/payment/${userId}/${orderId}`);
-  // };
+
 
   return (
     <div className="dashboard">

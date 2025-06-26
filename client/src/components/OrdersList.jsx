@@ -11,7 +11,7 @@ const OrdersList = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/admin/getorders', {
+const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/admin/getorders`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json",
@@ -32,8 +32,7 @@ const OrdersList = () => {
 
   const updateOrderStatus = async (orderId, newStatus) => {
     try {
-      await axios.put(
-        `http://localhost:5000/admin/editorders/${orderId}`,
+   await axios.put(`${process.env.REACT_APP_BASE_URL}/admin/editorders/${orderId}`,
         { status: newStatus },
         {
           headers: {

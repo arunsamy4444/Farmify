@@ -9,7 +9,7 @@ const UsersList = () => {
     const fetchUsers = async () => {
       setLoading(true);
       try {
-        const response = await axios.get('http://localhost:5000/admin/getallusers', {
+      const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/admin/getallusers`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "multipart/form-data",
@@ -32,7 +32,7 @@ const UsersList = () => {
           {users.map((user) => (
             <li key={user._id} className="user-card">
               <img
-                src={`http://localhost:5000${user.profilePic}`}
+              src={`${process.env.REACT_APP_BASE_URL}${user.profilePic}`}
                 alt={user.name}
                 className="user-avatar"
               />

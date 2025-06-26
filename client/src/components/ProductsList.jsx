@@ -12,7 +12,7 @@ const ProductsList = () => {
         const fetchProducts = async () => {
           toast.info("Fetching products...");
             try {
-                const response = await axios.get('http://localhost:5000/admin/products');
+                const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/admin/products`)
                 setProducts(response.data.products);
                 toast.success("Products loaded successfully!");
             } catch (err) {
@@ -32,8 +32,8 @@ const ProductsList = () => {
 
         if (name && quantity && pricePerKg) {
             try {
-                await axios.put(
-                    `http://localhost:5000/admin/editproducts/${productId}`,
+             await axios.put(
+  `${process.env.REACT_APP_BASE_URL}/admin/editproducts/${productId}`,
                     { name, quantity, pricePerKg },
                     {
                         headers: {
@@ -55,8 +55,8 @@ const ProductsList = () => {
     const handleDeleteProduct = async (productId) => {
         if (window.confirm("Are you sure you want to delete this product?")) {
             try {
-                await axios.delete(
-                    `http://localhost:5000/admin/deleteproducts/${productId}`,
+               await axios.delete(
+  `${process.env.REACT_APP_BASE_URL}/admin/deleteproducts/${productId}`,
                     {
                         headers: {
                             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -109,24 +109,7 @@ const ProductsList = () => {
             ))}
         </ul>
     </div>
-        // <div>
-        //     <h2>Product List</h2>
-        //     <ToastContainer position="top-right" autoClose={3000} />
-        //     {loading ? (
-        //         <p>Loading products...</p>
-        //     ) : (
-        //         <ul>
-        //             {products.map((product) => (
-        //                 <li key={product._id}>
-        //                     <img src={product.picture} alt={product.name} style={{ width: "100px", height: "100px" }} />
-        //                     {product.name} - {product.quantity} - ₹{product.pricePerKg}/kg
-        //                     <button onClick={() => handleEditProduct(product._id)}>Edit</button>
-        //                     <button onClick={() => handleDeleteProduct(product._id)}>Delete</button>
-        //                 </li>
-        //             ))}
-        //         </ul>
-        //     )}
-        // </div>
+     
     );
 };
 

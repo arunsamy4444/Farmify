@@ -1,6 +1,7 @@
-# Ignore environment variables
-.env
+# Ignore all .env files EXCEPT client and server
+*.env
+!client/.env
+!server/.env
 
 # Ignore node_modules
-node_modules/node_modules/
-.env
+node_modules/

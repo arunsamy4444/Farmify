@@ -10,7 +10,8 @@ const PaymentList = () => {
     const fetchPayments = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:5000/admin/get/payments", {
+    const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/admin/get/payments`, {
+
           headers: { Authorization: `Bearer ${token}` },
         });
         setPayments(response.data.payments);

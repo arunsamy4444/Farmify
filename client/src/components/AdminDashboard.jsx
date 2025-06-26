@@ -24,25 +24,37 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const usersResponse = await axios.get("http://localhost:5000/admin/getallusers", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        // AFTER
+        const usersResponse = await axios.get(
+          `${process.env.REACT_APP_BASE_URL}/admin/getallusers`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
         setUsers(usersResponse.data.users);
 
-        const productsResponse = await axios.get("http://localhost:5000/admin/products", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        // AFTER
+        const productsResponse = await axios.get(
+          `${process.env.REACT_APP_BASE_URL}/admin/products`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
         setProducts(productsResponse.data.products);
 
-        const ordersResponse = await axios.get("http://localhost:5000/admin/getorders", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        // AFTER
+        const ordersResponse = await axios.get(
+          `${process.env.REACT_APP_BASE_URL}/admin/getorders`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
         setOrders(ordersResponse.data.orders);
       } catch (error) {
         toast.error("Error fetching dashboard data");
@@ -57,8 +69,10 @@ const AdminDashboard = () => {
 
   const handleEditOrderStatus = async (orderId, status) => {
     try {
+      // AFTER
       const response = await axios.put(
-        `http://localhost:5000/admin/editorders/${orderId}`,
+        `${process.env.REACT_APP_BASE_URL}/admin/editorders/${orderId}`,
+
         { status },
         {
           headers: {
@@ -93,12 +107,17 @@ const AdminDashboard = () => {
     formData.append("picture", picture);
 
     try {
-      const response = await axios.post("http://localhost:5000/admin/products/add", formData, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      // AFTER
+      const response = await axios.post(
+        `${process.env.REACT_APP_BASE_URL}/admin/products/add`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       toast.success("Product added successfully");
       setProducts([...products, response.data.product]);
@@ -124,10 +143,18 @@ const AdminDashboard = () => {
       <h2 className="title">Admin Dashboard</h2>
 
       <div className="nav-links">
-        <Link to="/UsersList" className="btn-link">Users List</Link>
-        <Link to="/ProductsManagement" className="btn-link">Products</Link>
-        <Link to="/OrdersManagement" className="btn-link">Orders</Link>
-        <Link to="/payments" className="btn-link">Payments</Link>
+        <Link to="/UsersList" className="btn-link">
+          Users List
+        </Link>
+        <Link to="/ProductsManagement" className="btn-link">
+          Products
+        </Link>
+        <Link to="/OrdersManagement" className="btn-link">
+          Orders
+        </Link>
+        <Link to="/payments" className="btn-link">
+          Payments
+        </Link>
       </div>
 
       <h3 className="subtitle">Add New Product</h3>
@@ -137,19 +164,25 @@ const AdminDashboard = () => {
           type="text"
           placeholder="Product Name"
           value={newProduct.name}
-          onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
+          onChange={(e) =>
+            setNewProduct({ ...newProduct, name: e.target.value })
+          }
         />
         <input
           type="number"
           placeholder="Quantity"
           value={newProduct.quantity}
-          onChange={(e) => setNewProduct({ ...newProduct, quantity: e.target.value })}
+          onChange={(e) =>
+            setNewProduct({ ...newProduct, quantity: e.target.value })
+          }
         />
         <input
           type="number"
           placeholder="Price per kg"
           value={newProduct.pricePerKg}
-          onChange={(e) => setNewProduct({ ...newProduct, pricePerKg: e.target.value })}
+          onChange={(e) =>
+            setNewProduct({ ...newProduct, pricePerKg: e.target.value })
+          }
         />
         <input type="file" onChange={handleFileChange} />
         <button onClick={handleAddProduct}>Add Product</button>
@@ -257,4 +290,3 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
-
