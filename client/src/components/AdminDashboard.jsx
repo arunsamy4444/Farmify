@@ -160,12 +160,15 @@ const AdminDashboard = () => {
       <div className="product-grid">
         {products.map((product) => (
           <div className="product-card" key={product._id}>
-            <img
-              src={getImageUrl(product.picture)}
-              alt={product.name}
-              className="product-image"
-              onError={(e) => (e.target.src = "default-image-path.jpg")}
-            />
+<img
+  src={`https://farmify-api.onrender.com/uploads/${product.picture}`}
+  alt={product.name}
+  className="product-image"
+  onError={(e) =>
+    (e.target.src = "https://via.placeholder.com/150?text=Image+Error")
+  }
+/>
+
             <h4>{product.name}</h4>
             <p>Qty: {product.quantity}</p>
             <p>₹{product.pricePerKg}/kg</p>
