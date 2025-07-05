@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
-  const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [newProduct, setNewProduct] = useState({
@@ -16,26 +15,92 @@ const AdminDashboard = () => {
     picture: null,
   });
   const [previewUrl, setPreviewUrl] = useState(null);
+  const navigate = useNavigate();
 
-
-  // ✅ Utility for displaying images
-  const getImageUrl = (picture) =>
-    picture
-      ? picture.startsWith("http")
-        ? picture
-        : `${process.env.REACT_APP_BASE_URL}/uploads/${picture}`
-      : "default-image-path.jpg";
+  // Static fallback product list
+  const staticProducts = [
+    {
+      _id: "1",
+      name: "Tomatoes",
+      picture: "/images/tom.jpg",
+      pricePerKg: 25,
+      quantity: 100,
+    },
+    {
+      _id: "2",
+      name: "Onions",
+      picture: "/images/oni.jpg",
+      pricePerKg: 20,
+      quantity: 200,
+    },
+    {
+      _id: "3",
+      name: "Potatoes",
+      picture: "/images/pot.jpg",
+      pricePerKg: 30,
+      quantity: 150,
+    },
+    {
+      _id: "4",
+      name: "Brinjal",
+      picture: "/images/bri.jpg",
+      pricePerKg: 40,
+      quantity: 120,
+    },
+  ];
 
   useEffect(() => {
+    // Show the Render/static products warning toast on component mount
+    toast.warning(
+      <div>
+        <p>⚠️ <strong>Note:</strong> This app is hosted on Render (free tier)</p>
+        <p>Due to platform limitations:</p>
+        <ul style={{ paddingLeft: "20px", marginTop: "8px" }}>
+          <li>• Image upload & fetching are disabled</li>
+          <li>• Products are shown as static demo items</li>
+        </ul>
+        <p style={{ marginTop: "10px" }}>💻 For the full experience, run it locally.</p>
+        <p>
+          🖥️ Contact me for live localhost screen sharing:
+          <br />
+          🔗{" "}
+          <a
+            href="https://arunsamy.vercel.app"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              color: "#64ffda",
+              textDecoration: "underline",
+              fontWeight: "bold",
+            }}
+          >
+            arunsamy.vercel.app
+          </a>
+        </p>
+      </div>,
+      {
+        position: "top-right",
+        autoClose: 10000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        style: {
+          background: "#112240",
+          border: "1px solid #64ffda",
+          borderRadius: "6px",
+        },
+      }
+    );
+
     const fetchDashboardData = async () => {
       try {
         const token = localStorage.getItem("token");
 
-        const [usersRes, productsRes, ordersRes] = await Promise.all([
+        const [usersRes, ordersRes] = await Promise.all([
           axios.get(`${process.env.REACT_APP_BASE_URL}/admin/getallusers`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-          axios.get(`${process.env.REACT_APP_BASE_URL}/admin/products`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
           axios.get(`${process.env.REACT_APP_BASE_URL}/admin/getorders`, {
@@ -44,10 +109,9 @@ const AdminDashboard = () => {
         ]);
 
         setUsers(usersRes.data.users);
-        setProducts(productsRes.data.products);
         setOrders(ordersRes.data.orders);
       } catch (error) {
-        toast.error("Error fetching dashboard data");
+        toast.error("Error fetching dashboard data.");
         console.error("Dashboard fetch error", error);
       } finally {
         setLoading(false);
@@ -57,34 +121,11 @@ const AdminDashboard = () => {
     fetchDashboardData();
   }, []);
 
-  const handleEditOrderStatus = async (orderId, status) => {
-    try {
-      await axios.put(
-        `${process.env.REACT_APP_BASE_URL}/admin/editorders/${orderId}`,
-        { status },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      toast.success("Order status updated");
-
-      setOrders((prev) =>
-        prev.map((order) =>
-          order._id === orderId ? { ...order, status } : order
-        )
-      );
-    } catch (error) {
-      toast.error("Failed to update order status");
-    }
-  };
-
   const handleAddProduct = async () => {
     const { name, quantity, pricePerKg, picture } = newProduct;
 
     if (!name || !quantity || !pricePerKg || !picture) {
-      alert("Please fill all fields");
+      toast.error("Please fill all fields");
       return;
     }
 
@@ -95,7 +136,7 @@ const AdminDashboard = () => {
     formData.append("picture", picture);
 
     try {
-      const response = await axios.post(
+      await axios.post(
         `${process.env.REACT_APP_BASE_URL}/admin/products/add`,
         formData,
         {
@@ -106,40 +147,99 @@ const AdminDashboard = () => {
         }
       );
 
-      toast.success("Product added");
-      setProducts((prev) => [...prev, response.data.product]);
+      toast.success("Product added successfully!");
       setNewProduct({
         name: "",
         quantity: 0,
         pricePerKg: 0,
         picture: null,
       });
+      setPreviewUrl(null);
     } catch (error) {
       toast.error("Error adding product");
     }
   };
-const handleFileChange = (event) => {
-  const file = event.target.files[0];
-  setNewProduct({ ...newProduct, picture: file });
 
-  if (file) {
-    setPreviewUrl(URL.createObjectURL(file)); // Show image instantly
-  }
-};
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setNewProduct({ ...newProduct, picture: file });
 
-  // const handleFileChange = (event) => {
-  //   setNewProduct({ ...newProduct, picture: event.target.files[0] });
-  // };
+    if (file) {
+      setPreviewUrl(URL.createObjectURL(file));
+    }
+  };
+
+  const showProductToast = (e) => {
+    e.preventDefault();
+    toast.warning(
+      <div>
+        <p>
+          ⚠️ <strong>Note:</strong> This app is hosted on Render (free tier)
+        </p>
+        <p>Due to platform limitations:</p>
+        <ul style={{ paddingLeft: "20px", marginTop: "8px" }}>
+          <li>• Image upload & fetching are disabled</li>
+          <li>• Products are shown as static demo items</li>
+        </ul>
+        <p style={{ marginTop: "10px" }}>💻 For the full experience, run it locally.</p>
+        <p>
+          🖥️ Contact me for live localhost screen sharing:
+          <br />
+          🔗{" "}
+          <a
+            href="https://arunsamy.vercel.app"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              color: "#64ffda",
+              textDecoration: "underline",
+              fontWeight: "bold",
+            }}
+          >
+            arunsamy.vercel.app
+          </a>
+        </p>
+      </div>,
+      {
+        position: "top-right",
+        autoClose: 10000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        style: {
+          background: "#112240",
+          border: "1px solid #64ffda",
+          borderRadius: "6px",
+        },
+      }
+    );
+    
+    // Navigate after showing the toast
+    setTimeout(() => {
+      navigate("/ProductsManagement");
+    }, 100);
+  };
 
   return (
     <div className="admin-wrapper">
       <h2 className="title">Admin Dashboard</h2>
 
       <div className="nav-links">
-        <Link to="/UsersList" className="btn-link">Users List</Link>
-        <Link to="/ProductsManagement" className="btn-link">Products</Link>
-        <Link to="/OrdersManagement" className="btn-link">Orders</Link>
-        <Link to="/payments" className="btn-link">Payments</Link>
+        <Link to="/UsersList" className="btn-link">
+          Users List
+        </Link>
+        {/* <Link to="/ProductsManagement" className="btn-link" onClick={showProductToast}>
+          Products
+        </Link> */}
+        <Link to="/OrdersManagement" className="btn-link">
+          Orders
+        </Link>
+        <Link to="/payments" className="btn-link">
+          Payments
+        </Link>
       </div>
 
       <h3 className="subtitle">Add New Product</h3>
@@ -164,35 +264,31 @@ const handleFileChange = (event) => {
         />
         <input type="file" onChange={handleFileChange} />
         {previewUrl && (
-  <img
-    src={previewUrl}
-    alt="Preview"
-    style={{
-      width: "100%",
-      height: "150px",
-      objectFit: "cover",
-      borderRadius: "8px",
-      marginTop: "10px"
-    }}
-  />
-)}
-
+          <img
+            src={previewUrl}
+            alt="Preview"
+            style={{
+              width: "100%",
+              height: "150px",
+              objectFit: "cover",
+              borderRadius: "8px",
+              marginTop: "10px",
+            }}
+          />
+        )}
         <button onClick={handleAddProduct}>Add Product</button>
       </div>
 
-      <h3 className="subtitle">Product List</h3>
+      <h3 className="subtitle">Static Products Preview</h3>
       <div className="product-grid">
-        {products.map((product) => (
+        {staticProducts.map((product) => (
           <div className="product-card" key={product._id}>
-<img
-  src={`https://farmify-api.onrender.com/uploads/${product.picture}`}
-  alt={product.name}
-  className="product-image"
-  onError={(e) =>
-    (e.target.src = "https://via.placeholder.com/150?text=Image+Error")
-  }
-/>
-
+            <img
+              src={product.picture}
+              alt={product.name}
+              className="product-image"
+              onError={(e) => (e.target.src = "https://via.placeholder.com/150?text=No+Image")}
+            />
             <h4>{product.name}</h4>
             <p>Qty: {product.quantity}</p>
             <p>₹{product.pricePerKg}/kg</p>
@@ -200,7 +296,17 @@ const handleFileChange = (event) => {
         ))}
       </div>
 
-      <ToastContainer position="top-right" autoClose={2000} hideProgressBar />
+      <ToastContainer 
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
 
       <style>{`
         .admin-wrapper {
@@ -210,7 +316,6 @@ const handleFileChange = (event) => {
           background: white;
           border-radius: 12px;
           box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-          animation: fadeIn 0.5s ease-in-out;
         }
 
         .title {
@@ -298,11 +403,6 @@ const handleFileChange = (event) => {
           height: 120px;
           object-fit: cover;
           border-radius: 6px;
-        }
-
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
     </div>
