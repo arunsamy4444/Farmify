@@ -100,7 +100,7 @@ useEffect(() => {
     {
       _id: "3",
       name: "Potatoes",
-      picture: "s/pot.jpg",
+      picture: "/pot.jpg",
       pricePerKg: 30,
       quantity: 150,
     },
