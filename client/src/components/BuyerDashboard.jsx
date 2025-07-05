@@ -82,36 +82,37 @@ useEffect(() => {
   );
 
     // 👇 Static fallback product list with images from public/images/
-    const staticProducts = [
-      {
-        _id: "1",
-        name: "Tomatoes",
-        picture: "/images/tom.jpg",
-        pricePerKg: 25,
-        quantity: 100,
-      },
-      {
-        _id: "2",
-        name: "Onions",
-        picture: "/images/oni.jpg",
-        pricePerKg: 20,
-        quantity: 200,
-      },
-      {
-        _id: "3",
-        name: "Potatoes",
-        picture: "/images/pot.jpg",
-        pricePerKg: 30,
-        quantity: 150,
-      },
-      {
-        _id: "4",
-        name: "Brinjal",
-        picture: "/images/bri.jpg",
-        pricePerKg: 40,
-        quantity: 120,
-      },
-    ];
+   const staticProducts = [
+    {
+      _id: "1",
+      name: "Tomatoes",
+      picture: "/tom.jpg",
+      pricePerKg: 25,
+      quantity: 100,
+    },
+    {
+      _id: "2",
+      name: "Onions",
+      picture: "/oni.jpg",
+      pricePerKg: 20,
+      quantity: 200,
+    },
+    {
+      _id: "3",
+      name: "Potatoes",
+      picture: "s/pot.jpg",
+      pricePerKg: 30,
+      quantity: 150,
+    },
+    {
+      _id: "4",
+      name: "Brinjal",
+      picture: "/bri.jpg",
+      pricePerKg: 40,
+      quantity: 120,
+    },
+  ];
+
 
     setProducts(staticProducts);
 
