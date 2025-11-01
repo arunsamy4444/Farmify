@@ -49,22 +49,23 @@ router.get('/getallusers', authMiddleware, adminMiddleware, async (req, res) => 
 });
 
 
+// ✅ Get all products (auto URL switch)
 router.get('/products', async (req, res) => {
-    try {
-        const products = await Product.find();
+  try {
+    const products = await Product.find();
+    const baseUrl = req.hostname.includes('localhost')
+      ? `${req.protocol}://${req.get('host')}`
+      : `https://farmify-api.onrender.com`;
 
-        const updatedProducts = products.map(product => ({
-            ...product._doc,
-            picture: product.picture 
-                ? `${req.protocol}://${req.get('host')}/uploads/${product.picture}` 
-                : null
-        }));
+    const updated = products.map(p => ({
+      ...p._doc,
+      picture: p.picture ? `${baseUrl}/uploads/${p.picture}` : null
+    }));
 
-        res.status(200).json({ products: updatedProducts });
-    } catch (err) {
-        console.error('Error fetching products:', err);
-        res.status(500).json({ error: err.message });
-    }
+    res.json({ products: updated });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 

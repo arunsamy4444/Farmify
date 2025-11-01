@@ -65,6 +65,29 @@ const AdminDashboard = () => {
     fetchDashboardData();
   }, []);
 
+  const handleEditOrderStatus = async (orderId, status) => {
+    try {
+      const response = await axios.put(
+        `${process.env.REACT_APP_BASE_URL}/admin/editorders/${orderId}`,
+        { status },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      toast.success("Order status updated successfully");
+
+      const updatedOrders = orders.map((order) =>
+        order._id === orderId ? { ...order, status } : order
+      );
+      setOrders(updatedOrders);
+    } catch (error) {
+      toast.error("Error updating order status");
+      console.error("Error updating order status", error);
+    }
+  };
+
   const handleAddProduct = async () => {
     const { name, quantity, pricePerKg, picture } = newProduct;
 

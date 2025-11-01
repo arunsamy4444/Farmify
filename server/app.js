@@ -11,20 +11,36 @@ const paymentRoutes = require('./routes/paymentRoutes');
 
 
 const app = express();
-app.use(cors());
+// ✅ CORS Setup: Only allow frontend from Vercel or localhost
+const allowedOrigins = [
+  'https://farmify-tau.vercel.app',
+  'http://localhost:3000'
+];
 
 app.use(cors({
+<<<<<<< HEAD
   origin: process.env.CLIENT_URL,
   credentials: true,
 }));
+=======
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
 
-// app.options('*', cors(corsOptions)); 
-app.use(cors({ origin: '*' }));
+>>>>>>> 71880c96e48d2022e1446f8f5e7ff7c6964f7c1b
 
 app.use(express.json());
 
 // Serve static files from the 'uploads' directory
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use("/uploads", express.static("uploads"));
+
 
 // ✅ Mongo connection (local)
 mongoose.connect(process.env.MONGO_URI)
@@ -37,6 +53,13 @@ app.use('/admin', adminRoutes);
 app.use('/buyer', buyerRoutes);
 app.use('/payment', paymentRoutes);
 
+<<<<<<< HEAD
 // ✅ Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+=======
+// Start Server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+>>>>>>> 71880c96e48d2022e1446f8f5e7ff7c6964f7c1b
