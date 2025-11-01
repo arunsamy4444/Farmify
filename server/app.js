@@ -9,21 +9,18 @@ const adminRoutes = require('./routes/adminRoutes');
 const buyerRoutes = require('./routes/buyerRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 
-
 const app = express();
-// ✅ CORS Setup: Only allow frontend from Vercel or localhost
+
+// ✅ Allowed origins (local + production)
 const allowedOrigins = [
-  'https://farmify-tau.vercel.app',
-  'http://localhost:3000'
+  'http://localhost:3000',
+  process.env.CLIENT_URL // e.g. your Vercel frontend
 ];
 
+// ✅ CORS setup
 app.use(cors({
-<<<<<<< HEAD
-  origin: process.env.CLIENT_URL,
-  credentials: true,
-}));
-=======
   origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl)
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -33,33 +30,27 @@ app.use(cors({
   credentials: true
 }));
 
->>>>>>> 71880c96e48d2022e1446f8f5e7ff7c6964f7c1b
-
 app.use(express.json());
 
-// Serve static files from the 'uploads' directory
-// app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use("/uploads", express.static("uploads"));
+// ✅ Serve static files (images, uploads, etc.)
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-
-// ✅ Mongo connection (local)
+// ✅ MongoDB connection
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('✅ MongoDB connected locally'))
+  .then(() => console.log('✅ MongoDB connected successfully'))
   .catch(err => console.error('❌ MongoDB connection error:', err));
 
-// Routes
+// ✅ Route setup
 app.use('/auth', authRoutes);
 app.use('/admin', adminRoutes);
 app.use('/buyer', buyerRoutes);
 app.use('/payment', paymentRoutes);
 
-<<<<<<< HEAD
+// ✅ Default route (for testing)
+app.get('/', (req, res) => {
+  res.send('🌱 Farmify API is running...');
+});
+
 // ✅ Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
-=======
-// Start Server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
->>>>>>> 71880c96e48d2022e1446f8f5e7ff7c6964f7c1b
