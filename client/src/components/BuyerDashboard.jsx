@@ -4,7 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import "../styles/BuyerDashboard.css";
 
 const BuyerDashboard = () => {
   const [products, setProducts] = useState([]);
@@ -38,16 +38,16 @@ const BuyerDashboard = () => {
     if (!userId) return;
 
     axios
-       .get(`${process.env.REACT_APP_BASE_URL}/buyer/getallproducts`)
+      .get(`${process.env.REACT_APP_BASE_URL}/buyer/getallproducts`)
       .then((response) => setProducts(response.data.products))
-      .catch((error) =>  toast.error("Error fetching products"));
+      .catch((error) => toast.error("Error fetching products"));
 
     axios
       .get(`${process.env.REACT_APP_BASE_URL}/buyer/getorder/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => setOrders(response.data.orders || []))
-      .catch((error) =>toast.error("Error fetching orders"));
+      .catch((error) => toast.error("Error fetching orders"));
   }, [userId]);
 
   const getImageUrl = (picture) =>
@@ -83,7 +83,7 @@ const BuyerDashboard = () => {
   };
 
   const placeOrder = () => {
-    console.log("Selected Orders:", selectedOrders); // Debugging line
+    console.log("Selected Orders:", selectedOrders);
     if (
       selectedOrders.length === 0 ||
       !address.taluk ||
@@ -100,28 +100,26 @@ const BuyerDashboard = () => {
       productName: order.product?.name,
       quantity: order.quantity,
       pricePerKg: order.product?.pricePerKg,
-      totalPrice: order.product?.pricePerKg * order.quantity, // Calculate total price per order item
+      totalPrice: order.product?.pricePerKg * order.quantity,
       address,
     }));
     
-    console.log("Order Data to be sent:", orderData); // Debugging line
+    console.log("Order Data to be sent:", orderData);
     
     axios
       .post(
-       `${process.env.REACT_APP_BASE_URL}/buyer/placeorder`,
-        { orderItems: orderData, address, targetName: "Default Target"  },
+        `${process.env.REACT_APP_BASE_URL}/buyer/placeorder`,
+        { orderItems: orderData, address, targetName: "Default Target" },
         { headers: { Authorization: `Bearer ${token}` } }
       )
       .then((response) => {
         toast.success("Order placed successfully");
-         // Calculate the total order price
         const totalOrderPrice = orderData.reduce((sum, item) => sum + item.totalPrice, 0);
 
         setOrders([...orders, response.data.order]);
         setSelectedOrders([]);
         setOrderId(response.data.order._id);
-         // Navigate to payment page with total price included
-      navigate(`/payment/${userId}/${response.data.order._id}?total=${totalOrderPrice}`);
+        navigate(`/payment/${userId}/${response.data.order._id}?total=${totalOrderPrice}`);
       })
       .catch((error) => {
         console.error("Error placing order:", error.response?.data || error.message);
@@ -135,7 +133,6 @@ const BuyerDashboard = () => {
       return;
     }
   
-    // Calculate total price for selected orders
     const totalOrderPrice = selectedOrders.reduce(
       (sum, item) => sum + item.product.pricePerKg * item.quantity,
       0
@@ -143,125 +140,110 @@ const BuyerDashboard = () => {
   
     navigate(`/payment/${userId}/${orderId}?total=${totalOrderPrice}`);
   };
-  
-
 
   return (
-    <div className="dashboard">
-       <ToastContainer position="top-right" autoClose={3000} />
-<h1 className="text-4xl font-bold text-gray-900 text-center mt-6 mb-8">Buyer Dashboard</h1>
+    <div className="buyer-dashboard">
+      <ToastContainer position="top-right" autoClose={3000} />
+      
+      <h1 className="buyer-title">Buyer Dashboard</h1>
 
       {/* Product List */}
-      <h2 className="text-3xl font-bold text-gray-900 mb-6 text-center">Products</h2>
-<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6">
-  {products.map((product) => (
-    <div
-      className="bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-transform transform hover:scale-105"
-      key={product._id}
-    >
-      <img
-        className="w-full h-48 object-cover rounded-md"
-        src={getImageUrl(product.picture)}
-        alt={product.name}
-        onError={(e) => (e.target.src = "default-image-path.jpg")}
-      />
-      <h3 className="text-xl font-semibold text-gray-800 mt-4">{product.name}</h3>
-      <p className="text-sm text-gray-600 mt-2">Available: {product.quantity}</p>
-      <p className="text-sm text-gray-800 font-semibold mt-2">Price: ₹{product.pricePerKg} per kg</p>
-      <button
-        className="w-full mt-4 bg-blue-500 text-white font-semibold py-2 rounded-md hover:bg-blue-600 transition"
-        onClick={() => selectProduct(product)}
-      >
-        Order
-      </button>
-    </div>
-  ))}
-</div>
-
+      <h2 className="buyer-section-title">Products</h2>
+      <div className="buyer-products-grid">
+        {products.map((product) => (
+          <div className="buyer-product-card" key={product._id}>
+            <img
+              className="buyer-product-image"
+              src={getImageUrl(product.picture)}
+              alt={product.name}
+              onError={(e) => (e.target.src = "default-image-path.jpg")}
+            />
+            <h3 className="buyer-product-name">{product.name}</h3>
+            <p className="buyer-product-stock">Available: {product.quantity}</p>
+            <p className="buyer-product-price">Price: ₹{product.pricePerKg} per kg</p>
+            <button
+              className="buyer-order-btn"
+              onClick={() => selectProduct(product)}
+            >
+              Order
+            </button>
+          </div>
+        ))}
+      </div>
 
       {/* Order Form */}
       {selectedOrders.length > 0 && (
-  <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200 max-w-lg mx-auto">
-    <h3 className="text-xl font-bold text-gray-900 mb-4">Your Order</h3>
-    {selectedOrders.map((item) => (
-      <div
-        key={item.product._id}
-        className="flex items-center justify-between p-4 bg-gray-100 rounded-md mb-3 shadow-sm"
-      >
-        <p className="text-gray-800 font-medium">{item.product.name}</p>
-        <input
-          type="number"
-          value={item.quantity}
-          onChange={(e) => updateQuantity(item.product._id, Number(e.target.value))}
-          min="1"
-          className="w-16 p-2 border border-gray-300 rounded-md text-center"
-        />
-        <button
-          className="text-red-500 font-semibold hover:text-red-700 transition"
-          onClick={() => removeProduct(item.product._id)}
-        >
-          Remove
-        </button>
-      </div>
-    ))}
+        <div className="buyer-order-form">
+          <h3 className="buyer-order-title">Your Order</h3>
+          {selectedOrders.map((item) => (
+            <div key={item.product._id} className="buyer-order-item">
+              <p className="buyer-product-name">{item.product.name}</p>
+              <input
+                type="number"
+                value={item.quantity}
+                onChange={(e) => updateQuantity(item.product._id, Number(e.target.value))}
+                min="1"
+                className="buyer-quantity-input"
+              />
+              <button
+                className="buyer-remove-btn"
+                onClick={() => removeProduct(item.product._id)}
+              >
+                Remove
+              </button>
+            </div>
+          ))}
 
-    <h3 className="text-xl font-bold text-gray-900 mt-6 mb-4">Enter Address</h3>
-    <div className="space-y-3">
-      <input
-        type="text"
-        placeholder="Taluk"
-        value={address.taluk}
-        onChange={(e) => setAddress({ ...address, taluk: e.target.value })}
-        className="w-full p-3 border border-gray-300 rounded-md focus:ring focus:ring-blue-300"
-      />
-      <input
-        type="text"
-        placeholder="District"
-        value={address.district}
-        onChange={(e) => setAddress({ ...address, district: e.target.value })}
-        className="w-full p-3 border border-gray-300 rounded-md focus:ring focus:ring-blue-300"
-      />
-      <input
-        type="text"
-        placeholder="Pincode"
-        value={address.pincode}
-        onChange={(e) => setAddress({ ...address, pincode: e.target.value })}
-        className="w-full p-3 border border-gray-300 rounded-md focus:ring focus:ring-blue-300"
-      />
-      <input
-        type="text"
-        placeholder="Village/Town"
-        value={address.villageTown}
-        onChange={(e) => setAddress({ ...address, villageTown: e.target.value })}
-        className="w-full p-3 border border-gray-300 rounded-md focus:ring focus:ring-blue-300"
-      />
-    </div>
+          <h3 className="buyer-address-title">Enter Address</h3>
+          <div className="buyer-address-form">
+            <input
+              type="text"
+              placeholder="Taluk"
+              value={address.taluk}
+              onChange={(e) => setAddress({ ...address, taluk: e.target.value })}
+              className="buyer-address-input"
+            />
+            <input
+              type="text"
+              placeholder="District"
+              value={address.district}
+              onChange={(e) => setAddress({ ...address, district: e.target.value })}
+              className="buyer-address-input"
+            />
+            <input
+              type="text"
+              placeholder="Pincode"
+              value={address.pincode}
+              onChange={(e) => setAddress({ ...address, pincode: e.target.value })}
+              className="buyer-address-input"
+            />
+            <input
+              type="text"
+              placeholder="Village/Town"
+              value={address.villageTown}
+              onChange={(e) => setAddress({ ...address, villageTown: e.target.value })}
+              className="buyer-address-input"
+            />
+          </div>
 
-    <button
-      className="w-full mt-6 bg-blue-500 text-white font-semibold py-3 rounded-md hover:bg-blue-600 transition"
-      onClick={placeOrder}
-    >
-      Place Order
-    </button>
-  </div>
-)}
+          <button className="buyer-place-order-btn" onClick={placeOrder}>
+            Place Order
+          </button>
+        </div>
+      )}
 
-
-{orderId && (
-  <div className="bg-white shadow-lg rounded-lg p-6 text-center border border-gray-200">
-    <h2 className="text-xl font-semibold text-gray-800 mb-4">Your Order ID: <span className="text-blue-600">{orderId}</span></h2>
-    <button 
-      className="px-6 py-3 bg-blue-500 text-white font-medium rounded-lg shadow-md hover:bg-blue-600 transition"
-      onClick={goToPayment}
-    >
-      Proceed to Payment
-    </button>
-  </div>
-)}
-
+      {orderId && (
+        <div className="buyer-payment-section">
+          <h2 className="buyer-order-id">
+            Your Order ID: <span className="buyer-order-id-value">{orderId}</span>
+          </h2>
+          <button className="buyer-payment-btn" onClick={goToPayment}>
+            Proceed to Payment
+          </button>
+        </div>
+      )}
     </div>
   );
 };
 
 export default BuyerDashboard;
-

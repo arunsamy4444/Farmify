@@ -1,0 +1,414 @@
+/* Import clean, professional font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* CSS Variables for consistent theming */
+:root {
+  --primary-color: #2563eb;
+  --primary-hover: #1d4ed8;
+  --secondary-color: #64748b;
+  --success-color: #059669;
+  --warning-color: #d97706;
+  --error-color: #dc2626;
+  --background-color: #f8fafc;
+  --surface-color: #ffffff;
+  --border-color: #e2e8f0;
+  --border-hover: #cbd5e1;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --border-radius: 8px;
+  --transition: all 0.2s ease-in-out;
+}
+
+/* Global Orders Styles */
+.orders-wrapper {
+  max-width: 1400px;
+  margin: 30px auto;
+  padding: 30px;
+  background: var(--surface-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.orders-title {
+  text-align: center;
+  font-size: 32px;
+  margin-bottom: 30px;
+  color: var(--text-primary);
+  font-weight: 700;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Table Container */
+.orders-table-container {
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: transparent;
+  font-size: 14px;
+}
+
+.orders-table th {
+  background: var(--primary-color);
+  color: white;
+  font-weight: 600;
+  padding: 16px 12px;
+  text-align: center;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.orders-table td {
+  padding: 14px 12px;
+  border-bottom: 1px solid var(--border-color);
+  text-align: center;
+  font-size: 13px;
+  transition: var(--transition);
+}
+
+.orders-table tr:last-child td {
+  border-bottom: none;
+}
+
+.orders-table tr {
+  transition: var(--transition);
+  background: transparent;
+}
+
+.orders-table tr:nth-child(even) {
+  background: #f8fafc;
+}
+
+.orders-table tr:hover {
+  background: #f1f5f9;
+}
+
+/* Table Cells */
+.orders-id {
+  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.orders-customer {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.orders-product {
+  color: var(--text-primary);
+  max-width: 250px;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+.orders-status {
+  font-weight: 600;
+}
+
+/* Status Badges */
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-block;
+  min-width: 80px;
+  transition: var(--transition);
+}
+
+.status-pending {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #f59e0b;
+}
+
+.status-shipped {
+  background: #dbeafe;
+  color: #1e40af;
+  border: 1px solid #3b82f6;
+}
+
+.status-delivered {
+  background: #dcfce7;
+  color: #065f46;
+  border: 1px solid #10b981;
+}
+
+.status-cancelled {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #ef4444;
+}
+
+.status-processing {
+  background: #f3e8ff;
+  color: #6d28d9;
+  border: 1px solid #8b5cf6;
+}
+
+/* Actions Section */
+.orders-actions {
+  text-align: center;
+}
+
+.orders-status-select {
+  padding: 8px 12px;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  background: var(--surface-color);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  min-width: 120px;
+  font-family: inherit;
+}
+
+.orders-status-select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.orders-status-select:hover {
+  border-color: var(--border-hover);
+}
+
+/* States */
+.orders-loading {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  font-size: 16px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  background: #f8fafc;
+  border-radius: var(--border-radius);
+  border: 1px dashed var(--border-color);
+}
+
+.orders-loading::after {
+  content: '';
+  width: 30px;
+  height: 30px;
+  margin-top: 15px;
+  border: 3px solid #e2e8f0;
+  border-top: 3px solid var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.orders-error {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  font-size: 16px;
+  color: var(--error-color);
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--border-radius);
+  margin: 20px 0;
+  padding: 20px;
+  text-align: center;
+}
+
+.orders-empty {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 150px;
+  font-size: 16px;
+  color: var(--text-secondary);
+  background: #f9fafb;
+  border: 1px dashed var(--border-color);
+  border-radius: var(--border-radius);
+  margin-top: 20px;
+  text-align: center;
+  padding: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Enhanced Responsive Design */
+@media (max-width: 1200px) {
+  .orders-wrapper {
+    margin: 20px;
+    padding: 25px;
+  }
+  
+  .orders-title {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 968px) {
+  .orders-table-container {
+    overflow-x: auto;
+  }
+  
+  .orders-table {
+    min-width: 800px;
+  }
+}
+
+@media (max-width: 768px) {
+  .orders-wrapper {
+    margin: 15px;
+    padding: 20px;
+  }
+  
+  .orders-title {
+    font-size: 24px;
+    margin-bottom: 25px;
+  }
+  
+  .orders-table th,
+  .orders-table td {
+    padding: 12px 8px;
+    font-size: 12px;
+  }
+  
+  .orders-table th {
+    font-size: 11px;
+    padding: 10px 8px;
+  }
+  
+  .status-badge {
+    padding: 4px 8px;
+    font-size: 10px;
+    min-width: 70px;
+  }
+  
+  .orders-status-select {
+    padding: 6px 10px;
+    font-size: 11px;
+    min-width: 100px;
+  }
+}
+
+@media (max-width: 480px) {
+  .orders-wrapper {
+    margin: 10px;
+    padding: 15px;
+  }
+  
+  .orders-title {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .orders-table th,
+  .orders-table td {
+    padding: 10px 6px;
+    font-size: 11px;
+  }
+  
+  .orders-table th {
+    font-size: 10px;
+    letter-spacing: 0.3px;
+  }
+  
+  .status-badge {
+    padding: 3px 6px;
+    font-size: 9px;
+    min-width: 60px;
+  }
+  
+  .orders-status-select {
+    padding: 5px 8px;
+    font-size: 10px;
+    min-width: 90px;
+  }
+  
+  .orders-loading,
+  .orders-error,
+  .orders-empty {
+    height: 150px;
+    font-size: 14px;
+    padding: 15px;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background-color: #0f172a;
+    --surface-color: #1e293b;
+    --border-color: #334155;
+    --border-hover: #475569;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+  }
+  
+  .orders-table tr:nth-child(even) {
+    background: #1e293b;
+  }
+  
+  .orders-table tr:hover {
+    background: #334155;
+  }
+  
+  .orders-loading {
+    background: #1e293b;
+  }
+  
+  .orders-empty {
+    background: #1e293b;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus styles for accessibility */
+.orders-status-select:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+  .orders-wrapper {
+    box-shadow: none;
+    border: 1px solid #000;
+    background: white;
+  }
+  
+  .orders-table th {
+    background: #f3f4f6 !important;
+    color: #000 !important;
+    -webkit-print-color-adjust: exact;
+  }
+}

@@ -5,6 +5,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const path = require('path');
+require('dotenv').config(); // ✅ Load env variables
+
 
 // Set up storage engine for multer
 const storage = multer.diskStorage({
@@ -21,7 +23,7 @@ const upload = multer({ storage });
 // Signup route
 router.post('/signup', upload.single('profilePic'), async (req, res) => {
     const { name, email, password, role } = req.body;
-    const profilePic = req.file ? `/uploads/${req.file.filename}` : '';
+    const profilePic = req.file ? `/uploads/${req.file.filename}` : req.body.profilePic || '';
 
     try {
         // Check if user already exists
@@ -43,9 +45,11 @@ router.post('/signup', upload.single('profilePic'), async (req, res) => {
 
         await user.save();
 
-       const token = jwt.sign({ id: user._id, role: user.role }, "supersecretjwtkey", { expiresIn: '30d' });
-
-
+        const token = jwt.sign(
+            { id: user._id, role: user.role },
+            process.env.JWT_SECRET, // ✅ from .env
+            { expiresIn: '30d' }
+        );
         res.status(201).json({ message: 'User created successfully', token, user });
     } catch (err) {
         console.error('Signup error:', err);
@@ -64,8 +68,12 @@ router.post('/login', async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ error: 'Invalid credentials' });
 
-        // Generate JWT token
-        const token = jwt.sign({ id: user._id, role: user.role }, "supersecretjwtkey", { expiresIn: '30d' });
+        const token = jwt.sign(
+            { id: user._id, role: user.role },
+            process.env.JWT_SECRET, // ✅ from .env
+            { expiresIn: '30d' }
+        );
+
         res.status(200).json({ message: 'Login successful', token, user });
     } catch (err) {
         console.error('Login error:', err);
@@ -73,53 +81,9 @@ router.post('/login', async (req, res) => {
     }
 });
 
-// Logout route (for client-side token removal)
+// Logout route
 router.post('/logout', (req, res) => {
     res.status(200).json({ message: 'Logout successful' });
 });
 
-
 module.exports = router;
-
-
-
-
-
-// const express = require('express');
-// const router = express.Router();
-// const User = require('../models/User');
-// const bcrypt = require('bcryptjs');
-// const jwt = require('jsonwebtoken');
-
-// // Signup
-// router.post('/signup', async (req, res) => {
-//     const { name, profilePic, email, password, role } = req.body;
-//     try {
-//         const hashedPassword = await bcrypt.hash(password, 10);
-//         const user = new User({ name, profilePic, email, password: hashedPassword, role });
-//         await user.save();
-//         res.status(201).json({ message: 'User created successfully' });
-//     } catch (err) {
-//         res.status(500).json({ error: err.message });
-//     }
-// });
-
-// // Login
-// router.post('/login', async (req, res) => {
-//     const { email, password } = req.body;
-//     try {
-//         const user = await User.findOne({ email });
-//         if (!user) return res.status(400).json({ error: 'User not found' });
-
-//         const isMatch = await bcrypt.compare(password, user.password);
-//         if (!isMatch) return res.status(400).json({ error: 'Invalid credentials' });
-
-//         // Generate JWT token
-//         const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '30d' });
-//         res.status(200).json({ message: 'Login successful', token, user });
-//     } catch (err) {
-//         res.status(500).json({ error: err.message });
-//     }
-// });
-
-// module.exports = router;

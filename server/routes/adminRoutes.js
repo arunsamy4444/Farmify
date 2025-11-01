@@ -36,74 +36,122 @@ const isAdmin = (req, res, next) => {
     next();
 };
 
-// Fetch All Users (Admin Only)
-router.get('/getallusers', [authMiddleware, adminMiddleware], async (req, res) => {
+
+// ✅ Get all users (Admin only)
+router.get('/getallusers', authMiddleware, adminMiddleware, async (req, res) => {
     try {
-        const users = await User.find();
-        if (!users.length) return res.status(404).json({ message: 'No users found.' });
-        res.status(200).json({ users });
+        const users = await User.find().select('-password'); // hide password field
+        res.status(200).json(users);
     } catch (err) {
+        console.error('Error fetching users:', err);
         res.status(500).json({ error: err.message });
     }
 });
 
+
 router.get('/products', async (req, res) => {
     try {
         const products = await Product.find();
+
         const updatedProducts = products.map(product => ({
             ...product._doc,
-            picture: product.picture ? `http://localhost:5000/uploads/${product.picture}` : null
+            picture: product.picture 
+                ? `${req.protocol}://${req.get('host')}/uploads/${product.picture}` 
+                : null
         }));
+
         res.status(200).json({ products: updatedProducts });
     } catch (err) {
+        console.error('Error fetching products:', err);
         res.status(500).json({ error: err.message });
     }
 });
 
 
 // Add Product with Image Upload
+const axios = require('axios');
+const { v4: uuidv4 } = require('uuid');
+
 router.post('/products/add', authMiddleware, isAdmin, upload.single('picture'), async (req, res) => {
-    const { name, quantity, pricePerKg } = req.body;
-    
-    if (!req.file) return res.status(400).json({ error: 'Picture is required' });
+    const { name, quantity, pricePerKg, picture } = req.body;
 
     try {
+        let finalFilename = '';
+
+        // Case 1️⃣ — Admin uploaded a file manually
+        if (req.file) {
+            finalFilename = req.file.filename;
+        }
+
+        // Case 2️⃣ — Admin sent an image URL
+        else if (picture && picture.startsWith('http')) {
+            const response = await axios.get(picture, { responseType: 'arraybuffer' });
+            const extension = path.extname(new URL(picture).pathname) || '.jpg';
+            finalFilename = `${uuidv4()}${extension}`;
+            const filePath = path.join(uploadDir, finalFilename);
+
+            fs.writeFileSync(filePath, Buffer.from(response.data)); // Save to uploads/
+        }
+
+        // Case 3️⃣ — No picture at all
+        else {
+            return res.status(400).json({ error: 'Picture is required (upload or URL)' });
+        }
+
+        // ✅ Save product in DB with stored filename
         const product = new Product({
             name,
             quantity,
             pricePerKg,
-            picture: req.file.filename // Save only filename
+            picture: finalFilename,
         });
 
         await product.save();
-        res.status(201).json({ message: 'Product added successfully', product });
+
+        res.status(201).json({
+            message: 'Product added successfully',
+            product: {
+                ...product._doc,
+                picture: `${req.protocol}://${req.get('host')}/uploads/${finalFilename}`
+            }
+        });
     } catch (err) {
+        console.error('Error adding product:', err);
         res.status(500).json({ error: err.message });
     }
 });
+
 
 // Edit Product (including price per kg)
-router.put('/editproducts/:id', authMiddleware, isAdmin, async (req, res) => {
-    const { id } = req.params;
-    try {
-        const product = await Product.findByIdAndUpdate(id, req.body, { new: true });
-        if (!product) return res.status(404).json({ message: 'Product not found' });
+router.put('/editproduct/:id', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const updatedProduct = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updatedProduct) return res.status(404).json({ error: 'Product not found' });
 
-        res.status(200).json({ message: 'Product updated successfully', product });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
+    res.status(200).json({
+      message: 'Product updated successfully',
+      product: updatedProduct
+    });
+  } catch (err) {
+    console.error('Error updating product:', err);
+    res.status(500).json({ error: err.message });
+  }
 });
+
+
 // Delete Product
-router.delete('/deleteproducts/:id', authMiddleware, isAdmin, async (req, res) => {
-    const { id } = req.params;
-    try {
-        await Product.findByIdAndDelete(id);
-        res.status(200).json({ message: 'Product deleted successfully' });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
+router.delete('/deleteproduct/:id', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const deletedProduct = await Product.findByIdAndDelete(req.params.id);
+    if (!deletedProduct) return res.status(404).json({ error: 'Product not found' });
+
+    res.status(200).json({ message: 'Product deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting product:', err);
+    res.status(500).json({ error: err.message });
+  }
 });
+
 
 router.get('/getorders', authMiddleware, isAdmin, async (req, res) => {
     try {

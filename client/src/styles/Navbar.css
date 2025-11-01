@@ -1,0 +1,288 @@
+/* Import clean, professional font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* CSS Variables for consistent theming */
+:root {
+  --primary-color: #2563eb;
+  --primary-hover: #1d4ed8;
+  --secondary-color: #64748b;
+  --success-color: #059669;
+  --success-hover: #047857;
+  --background-color: #ffffff;
+  --surface-color: #f8fafc;
+  --border-color: #e2e8f0;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --border-radius: 8px;
+  --transition: all 0.2s ease-in-out;
+}
+
+/* Global Navbar Styles */
+.navbar {
+  background: var(--background-color);
+  box-shadow: var(--shadow-md);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.navbar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+/* Logo Section */
+.navbar-logo {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--success-color);
+  text-decoration: none;
+  transition: var(--transition);
+  font-family: 'Inter', sans-serif;
+  z-index: 1001;
+}
+
+.navbar-logo:hover {
+  color: var(--success-hover);
+}
+
+/* Hamburger Menu Button */
+.navbar-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 21px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 1001;
+}
+
+.navbar-toggle-bar {
+  width: 100%;
+  height: 3px;
+  background-color: var(--text-primary);
+  border-radius: 2px;
+  transition: var(--transition);
+  transform-origin: center;
+}
+
+/* Hamburger animation when active */
+.navbar-toggle.active .navbar-toggle-bar:nth-child(1) {
+  transform: translateY(9px) rotate(45deg);
+}
+
+.navbar-toggle.active .navbar-toggle-bar:nth-child(2) {
+  opacity: 0;
+}
+
+.navbar-toggle.active .navbar-toggle-bar:nth-child(3) {
+  transform: translateY(-9px) rotate(-45deg);
+}
+
+/* Navigation Links */
+.navbar-links {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  transition: var(--transition);
+}
+
+/* Admin Dashboard Link */
+.navbar-link-admin {
+  background: var(--primary-color);
+  color: white;
+}
+
+.navbar-link-admin:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+/* Buyer Dashboard Link */
+.navbar-link-buyer {
+  background: var(--success-color);
+  color: white;
+}
+
+.navbar-link-buyer:hover {
+  background: var(--success-hover);
+  transform: translateY(-1px);
+}
+
+.navbar-link:active {
+  transform: translateY(0);
+}
+
+/* Mobile Overlay */
+.navbar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 998;
+}
+
+/* Enhanced Responsive Design */
+
+/* Laptop and above - normal menu */
+@media (min-width: 1025px) {
+  .navbar-links {
+    display: flex !important;
+  }
+}
+
+/* Tablet and below - hamburger menu */
+@media (max-width: 1024px) {
+  .navbar-container {
+    padding: 1rem 1.5rem;
+  }
+
+  .navbar-toggle {
+    display: flex;
+  }
+
+  .navbar-links {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 280px;
+    height: 100vh;
+    background: var(--background-color);
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    padding: 80px 2rem 2rem;
+    gap: 0.5rem;
+    box-shadow: -4px 0 16px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    transition: right 0.3s ease-in-out;
+  }
+
+  .navbar-links.active {
+    right: 0;
+  }
+
+  .navbar-link {
+    padding: 1rem 1.5rem;
+    font-size: 14px;
+    text-align: left;
+    border-radius: var(--border-radius);
+    width: 100%;
+    margin: 0;
+    transform: none !important;
+  }
+
+  .navbar-link:hover {
+    transform: translateX(4px) !important;
+  }
+}
+
+/* Mobile specific adjustments */
+@media (max-width: 768px) {
+  .navbar-container {
+    padding: 1rem;
+  }
+
+  .navbar-logo {
+    font-size: 20px;
+  }
+
+  .navbar-links {
+    width: 250px;
+    padding: 70px 1.5rem 1.5rem;
+  }
+
+  .navbar-link {
+    padding: 0.875rem 1.25rem;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-container {
+    padding: 0.75rem;
+  }
+
+  .navbar-logo {
+    font-size: 18px;
+  }
+
+  .navbar-links {
+    width: 100%;
+    right: -100%;
+  }
+
+  .navbar-links.active {
+    right: 0;
+  }
+
+  .navbar-link {
+    padding: 1rem;
+    font-size: 14px;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background-color: #1e293b;
+    --surface-color: #334155;
+    --border-color: #475569;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+  }
+
+  .navbar-links {
+    background: var(--background-color);
+    box-shadow: -4px 0 16px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+
+  .navbar-links {
+    transition: none;
+  }
+
+  .navbar-link:hover {
+    transform: none !important;
+  }
+
+  .navbar-toggle-bar {
+    transition: none;
+  }
+}
+
+/* Focus styles for accessibility */
+.navbar-logo:focus-visible,
+.navbar-link:focus-visible,
+.navbar-toggle:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Ensure links are visible when focused in mobile menu */
+.navbar-links.active .navbar-link:focus-visible {
+  position: relative;
+  z-index: 1002;
+}

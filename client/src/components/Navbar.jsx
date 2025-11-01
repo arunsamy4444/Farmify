@@ -1,31 +1,67 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import '../styles/Navbar.css';
 
 function Navbar() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
+
   return (
-    <nav className="bg-white shadow-md">
-      <div className="container mx-auto px-6 py-4 flex justify-between items-end">
+    <nav className="navbar">
+      <div className="navbar-container">
         {/* Logo Section */}
-        <Link to="/home" className="text-3xl font-bold text-green-800 hover:text-green-600 transition">
+        <Link 
+          to="/home" 
+          className="navbar-logo"
+          onClick={closeMenu}
+        >
           FarmiFy
         </Link>
 
+        {/* Hamburger Menu Button */}
+        <button 
+          className={`navbar-toggle ${isMenuOpen ? 'active' : ''}`}
+          onClick={toggleMenu}
+          aria-label="Toggle navigation menu"
+        >
+          <span className="navbar-toggle-bar"></span>
+          <span className="navbar-toggle-bar"></span>
+          <span className="navbar-toggle-bar"></span>
+        </button>
+
         {/* Navigation Links */}
-        <div className="flex gap-6">
+        <div className={`navbar-links ${isMenuOpen ? 'active' : ''}`}>
           <Link 
             to="/admin-dashboard" 
-            className="px-6 py-3 bg-blue-500 text-white font-medium rounded-lg shadow-md hover:bg-blue-600 transition"
+            className="navbar-link navbar-link-admin"
+            onClick={closeMenu}
           >
             Admin Dashboard
           </Link>
           <Link 
             to="/buyer-dashboard" 
-            className="px-6 py-3 bg-green-500 text-white font-medium rounded-lg shadow-md hover:bg-green-600 transition"
+            className="navbar-link navbar-link-buyer"
+            onClick={closeMenu}
           >
             Buyer Dashboard
           </Link>
         </div>
-        </div>
+
+        {/* Overlay for mobile menu */}
+        {isMenuOpen && (
+          <div 
+            className="navbar-overlay"
+            onClick={closeMenu}
+          ></div>
+        )}
+      </div>
     </nav>
   );
 }

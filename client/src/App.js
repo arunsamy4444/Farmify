@@ -5,14 +5,12 @@ import HomePage from './components/HomePage';
 import AdminDashboard from './components/AdminDashboard'; 
 import BuyerDashboard from './components/BuyerDashboard'; 
 import Payment from './components/Payment';
-import MapComponent from './components/MapComponent';
-import './App.css';
-import UsersList from './components/UserLIst';
+import UsersList from './components/UserList';
 import ProductsList from './components/ProductsList';
 import OrdersList from './components/OrdersList';
-import Orders from './components/Orders';
 import Navbar from './components/Navbar';
 import PaymentList from "./components/PaymentList"; // Import Payment Component
+import './App.css';
 
 const App = () => {
     return (
@@ -32,13 +30,10 @@ const App = () => {
                 <Route path="/UsersList" element={<UsersList />} />
                 <Route path="/ProductsManagement" element={<ProductsList />} />
                 <Route path="/OrdersManagement" element={<OrdersList />} />
-                <Route path="/Orders" element={<Orders />} />
                 <Route path="payments" element={<PaymentList />} /> {/* Add Payment List Route */}
                 
                 <Route path="/payment/:userId/:orderId" element={<Payment />} />
                 
-                {/* Route for MapComponent */}
-                <Route path="/map" element={<MapComponent />} />
             </Routes>
         </Router>
     );
