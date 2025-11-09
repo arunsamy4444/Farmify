@@ -20,6 +20,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Signup route
+// Signup route
 router.post('/signup', upload.single('profilePic'), async (req, res) => {
     const { name, email, password, role } = req.body;
     
@@ -33,9 +34,9 @@ router.post('/signup', upload.single('profilePic'), async (req, res) => {
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Create profile picture URL with full path
+        // Create profile picture URL with current server URL
         const profilePic = req.file ? 
-            `${process.env.BASE_URL || 'http://localhost:5000'}/uploads/${req.file.filename}` : 
+            `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}` : 
             '';
 
         const user = new User({
