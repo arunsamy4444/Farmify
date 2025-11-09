@@ -34,7 +34,7 @@ const ProductsList = () => {
         if (name && quantity && pricePerKg) {
             try {
                 await axios.put(
-                    `${process.env.REACT_APP_BASE_URL}/admin/editproducts/${productId}`,
+                    `${process.env.REACT_APP_BASE_URL}/admin/editproduct/${productId}`, // ✅ FIXED
                     { name, quantity, pricePerKg },
                     {
                         headers: {
@@ -57,7 +57,7 @@ const ProductsList = () => {
         if (window.confirm("Are you sure you want to delete this product?")) {
             try {
                 await axios.delete(
-                    `${process.env.REACT_APP_BASE_URL}/admin/deleteproducts/${productId}`,
+                    `${process.env.REACT_APP_BASE_URL}/admin/deleteproduct/${productId}`, // ✅ FIXED
                     {
                         headers: {
                             Authorization: `Bearer ${localStorage.getItem("token")}`,
