@@ -30,9 +30,16 @@ const UsersList = () => {
   const getImageUrl = (profilePic) => {
     if (!profilePic) return '/default-avatar.png';
     
-    return profilePic.startsWith('http') || profilePic.startsWith('/uploads') 
-      ? profilePic 
-      : `${process.env.REACT_APP_BASE_URL}${profilePic}`;
+    // Handle all possible URL formats
+    if (profilePic.startsWith('http')) {
+        return profilePic; // Already full URL
+    }
+    
+    if (profilePic.startsWith('/uploads')) {
+        return `${process.env.REACT_APP_BASE_URL}${profilePic}`; // /uploads/filename.jpg
+    }
+    
+    return `${process.env.REACT_APP_BASE_URL}/uploads/${profilePic}`; // Just filename
   };
 
   if (loading) return <div className="users-list-loading">Loading users...</div>;
@@ -56,6 +63,7 @@ const UsersList = () => {
                   alt={user.name}
                   className="users-list-avatar"
                   onError={(e) => {
+                    console.log('Failed to load profile picture:', user.profilePic);
                     e.target.src = '/default-avatar.png';
                   }}
                 />
