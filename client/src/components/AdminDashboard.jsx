@@ -6,10 +6,9 @@ import "react-toastify/dist/ReactToastify.css";
 import "../styles/AdminDashboard.css";
 
 const AdminDashboard = () => {
-  const [users, setUsers] = useState([]);
+  // Remove unused state variables
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [newProduct, setNewProduct] = useState({
     name: "",
     quantity: 0,
@@ -25,7 +24,8 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const usersResponse = await axios.get(
+        // Remove unused users fetch
+        await axios.get(
           `${process.env.REACT_APP_BASE_URL}/admin/getallusers`,
           {
             headers: {
@@ -33,7 +33,6 @@ const AdminDashboard = () => {
             },
           }
         );
-        setUsers(usersResponse.data.users);
 
         const productsResponse = await axios.get(
           `${process.env.REACT_APP_BASE_URL}/admin/products`,
@@ -57,36 +56,35 @@ const AdminDashboard = () => {
       } catch (error) {
         toast.error("Error fetching dashboard data");
         console.error("Error fetching dashboard data", error);
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchDashboardData();
   }, []);
 
-  const handleEditOrderStatus = async (orderId, status) => {
-    try {
-      const response = await axios.put(
-        `${process.env.REACT_APP_BASE_URL}/admin/editorders/${orderId}`,
-        { status },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      toast.success("Order status updated successfully");
+  // Remove unused handleEditOrderStatus function
+  // const handleEditOrderStatus = async (orderId, status) => {
+  //   try {
+  //     await axios.put(
+  //       `${process.env.REACT_APP_BASE_URL}/admin/editorders/${orderId}`,
+  //       { status },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         },
+  //       }
+  //     );
+  //     toast.success("Order status updated successfully");
 
-      const updatedOrders = orders.map((order) =>
-        order._id === orderId ? { ...order, status } : order
-      );
-      setOrders(updatedOrders);
-    } catch (error) {
-      toast.error("Error updating order status");
-      console.error("Error updating order status", error);
-    }
-  };
+  //     const updatedOrders = orders.map((order) =>
+  //       order._id === orderId ? { ...order, status } : order
+  //     );
+  //     setOrders(updatedOrders);
+  //   } catch (error) {
+  //     toast.error("Error updating order status");
+  //     console.error("Error updating order status", error);
+  //   }
+  // };
 
   const handleAddProduct = async () => {
     const { name, quantity, pricePerKg, picture } = newProduct;

@@ -48,8 +48,9 @@ const BuyerDashboard = () => {
       })
       .then((response) => setOrders(response.data.orders || []))
       .catch((error) => toast.error("Error fetching orders"));
-  }, [userId]);
+  }, [userId, token]); // ✅ Added token to dependency array
 
+  // ... rest of your component code remains the same
   const getImageUrl = (picture) =>
     picture
       ? picture.startsWith("http")
