@@ -9,22 +9,23 @@ const ProductsList = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-        const fetchProducts = async () => {
-            toast.info("Fetching products...");
-            try {
-                const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/admin/products`)
-                setProducts(response.data.products || []);
-                toast.success("Products loaded successfully!");
-            } catch (err) {
-                setError('Failed to fetch products');
-                toast.error("Failed to fetch products");
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchProducts();
-    }, []);
+useEffect(() => {
+    const fetchProducts = async () => {
+        toast.info("Fetching products...");
+        try {
+            const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/admin/products`)
+            console.log('Products API response:', response.data); // Add this line
+            setProducts(response.data.products || []);
+            toast.success("Products loaded successfully!");
+        } catch (err) {
+            setError('Failed to fetch products');
+            toast.error("Failed to fetch products");
+        } finally {
+            setLoading(false);
+        }
+    };
+    fetchProducts();
+}, []);
 
     const handleEditProduct = async (productId) => {
         const name = prompt("Enter new product name:");
@@ -73,10 +74,10 @@ const ProductsList = () => {
         }
     };
 
-    const getImageUrl = (picture) => {
-        if (!picture) return '/default-product.jpg';
-        return picture.startsWith('http') ? picture : `${process.env.REACT_APP_BASE_URL}/uploads/${picture}`;
-    };
+const getImageUrl = (picture) => {
+    if (!picture) return '/default-product.jpg';
+    return picture; // Use whatever the backend returns directly
+};
 
     if (loading) return <div className="products-list-loading">Loading products...</div>;
     if (error) return <div className="products-list-error">{error}</div>;
