@@ -11,14 +11,19 @@ const paymentRoutes = require('./routes/paymentRoutes');
 
 const app = express();
 
-const allowedOrigins = ['http://localhost:3000'];
+// ✅ Updated CORS configuration for production
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://farmify-delta.vercel.app'
+];
 
 app.use(cors({
   origin: function(origin, callback) {
-    // allow requests with no origin (like Postman, curl)
+    // Allow requests with no origin (like mobile apps, Postman) or from allowed origins
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
+      console.log(`CORS blocked: ${origin}`);
       callback(new Error(`CORS blocked: ${origin}`));
     }
   },
