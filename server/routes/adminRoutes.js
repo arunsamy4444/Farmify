@@ -64,9 +64,7 @@ router.get('/getallusers', authMiddleware, adminMiddleware, async (req, res) => 
 router.get('/products', async (req, res) => {
   try {
     const products = await Product.find();
-    const baseUrl = req.hostname.includes('localhost')
-      ? `${req.protocol}://${req.get('host')}`
-      : `https://farmify-api.onrender.com`;
+    const baseUrl = `${req.protocol}://${req.get('host')}`; // ✅ Fixed
 
     const updated = products.map(p => ({
       ...p._doc,
