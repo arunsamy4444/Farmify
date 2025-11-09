@@ -5,16 +5,15 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const path = require('path');
-require('dotenv').config(); // ✅ Load env variables
-
+require('dotenv').config();
 
 // Set up storage engine for multer
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/');  // Ensure 'uploads/' directory exists
+        cb(null, 'uploads/');
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname));  // Ensure unique file name
+        cb(null, Date.now() + path.extname(file.originalname));
     }
 });
 
@@ -23,8 +22,7 @@ const upload = multer({ storage });
 // Signup route
 router.post('/signup', upload.single('profilePic'), async (req, res) => {
     const { name, email, password, role } = req.body;
-    const profilePic = req.file ? `/uploads/${req.file.filename}` : req.body.profilePic || '';
-
+    
     try {
         // Check if user already exists
         const existingUser = await User.findOne({ email });
@@ -34,6 +32,11 @@ router.post('/signup', upload.single('profilePic'), async (req, res) => {
 
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Create profile picture URL with full path
+        const profilePic = req.file ? 
+            `${process.env.BASE_URL || 'http://localhost:5000'}/uploads/${req.file.filename}` : 
+            '';
 
         const user = new User({
             name,
@@ -47,10 +50,24 @@ router.post('/signup', upload.single('profilePic'), async (req, res) => {
 
         const token = jwt.sign(
             { id: user._id, role: user.role },
-            process.env.JWT_SECRET, // ✅ from .env
+            process.env.JWT_SECRET,
             { expiresIn: '30d' }
         );
-        res.status(201).json({ message: 'User created successfully', token, user });
+
+        // Return user without password
+        const userResponse = {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            profilePic: user.profilePic
+        };
+
+        res.status(201).json({ 
+            message: 'User created successfully', 
+            token, 
+            user: userResponse 
+        });
     } catch (err) {
         console.error('Signup error:', err);
         res.status(500).json({ error: 'Server error during signup' });
@@ -70,11 +87,24 @@ router.post('/login', async (req, res) => {
 
         const token = jwt.sign(
             { id: user._id, role: user.role },
-            process.env.JWT_SECRET, // ✅ from .env
+            process.env.JWT_SECRET,
             { expiresIn: '30d' }
         );
 
-        res.status(200).json({ message: 'Login successful', token, user });
+        // Return user without password
+        const userResponse = {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            profilePic: user.profilePic
+        };
+
+        res.status(200).json({ 
+            message: 'Login successful', 
+            token, 
+            user: userResponse 
+        });
     } catch (err) {
         console.error('Login error:', err);
         res.status(500).json({ error: 'Server error during login' });

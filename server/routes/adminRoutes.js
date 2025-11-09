@@ -41,7 +41,18 @@ const isAdmin = (req, res, next) => {
 router.get('/getallusers', authMiddleware, adminMiddleware, async (req, res) => {
     try {
         const users = await User.find().select('-password'); // hide password field
-        res.status(200).json(users);
+        
+        // Add full URL for profile pictures
+        const usersWithFullUrls = users.map(user => ({
+            ...user._doc,
+            profilePic: user.profilePic ? 
+                (user.profilePic.startsWith('http') ? 
+                    user.profilePic : 
+                    `${req.protocol}://${req.get('host')}${user.profilePic}`
+                ) : ''
+        }));
+
+        res.status(200).json(usersWithFullUrls);
     } catch (err) {
         console.error('Error fetching users:', err);
         res.status(500).json({ error: err.message });

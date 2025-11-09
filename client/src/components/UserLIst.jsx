@@ -29,9 +29,12 @@ const UsersList = () => {
 
   const getImageUrl = (profilePic) => {
     if (!profilePic) return '/default-avatar.png';
-    return profilePic.startsWith('http') 
+    
+    // If profilePic already contains the full URL (from backend), use it directly
+    // If it's just a filename, construct the full URL
+    return profilePic.startsWith('http') || profilePic.startsWith('/uploads') 
       ? profilePic 
-      : `${process.env.REACT_APP_BASE_URL}/uploads/${profilePic}`;
+      : `${process.env.REACT_APP_BASE_URL}${profilePic}`;
   };
 
   if (loading) return <div className="users-list-loading">Loading users...</div>;

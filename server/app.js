@@ -11,23 +11,18 @@ const paymentRoutes = require('./routes/paymentRoutes');
 
 const app = express();
 
-// ✅ Allowed origins (local + production)
-const allowedOrigins = [
-  'http://localhost:3000',
-  process.env.CLIENT_URL // e.g. your Vercel frontend
-];
+const allowedOrigins = ['http://localhost:3000'];
 
-// ✅ CORS setup
 app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl)
+  origin: function(origin, callback) {
+    // allow requests with no origin (like Postman, curl)
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error(`CORS blocked: ${origin}`));
     }
   },
-  credentials: true
+  credentials: true,
 }));
 
 app.use(express.json());
