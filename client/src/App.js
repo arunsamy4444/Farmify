@@ -5,7 +5,7 @@ import HomePage from './components/HomePage';
 import AdminDashboard from './components/AdminDashboard'; 
 import BuyerDashboard from './components/BuyerDashboard'; 
 import Payment from './components/Payment';
-import UsersList from './components/UserList';
+import UsersList from './components/UsersList'; // ✅ Fixed: Changed from UserList to UsersList
 import ProductsList from './components/ProductsList';
 import OrdersList from './components/OrdersList';
 import Navbar from './components/Navbar';
@@ -40,5 +40,3 @@ const App = () => {
 };
 
 export default App;
-
-
