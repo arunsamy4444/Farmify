@@ -60,45 +60,49 @@ const OrdersList = () => {
   return (
     <div className="orders-wrapper">
       <h2 className="orders-title">Orders Management</h2>
-      <table className="orders-table">
-        <thead>
-          <tr>
-            <th>Order ID</th>
-            <th>Customer</th>
-            <th>Product Name</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orders.map((order) => (
-            <tr key={order._id}>
-              <td className="orders-id">{order._id}</td>
-              <td className="orders-customer">{order.buyer?.name || "Unknown"}</td>
-              <td className="orders-product">
-                {order.products?.map((p) => p.productName).join(", ") || "No Product"}
-              </td>
-              <td className="orders-status">
-                <span className={`status-badge status-${order.status.toLowerCase()}`}>
-                  {order.status}
-                </span>
-              </td>
-              <td className="orders-actions">
-                <select
-                  value={order.status}
-                  onChange={(e) => updateOrderStatus(order._id, e.target.value)}
-                  className="orders-status-select"
-                >
-                  <option value="Pending">Pending</option>
-                  <option value="Shipped">Shipped</option>
-                  <option value="Delivered">Delivered</option>
-                  <option value="Cancelled">Cancelled</option>
-                </select>
-              </td>
+      
+      {/* ADD THIS CONTAINER DIV - SAME AS PAYMENT PAGE STRUCTURE */}
+      <div className="orders-table-container">
+        <table className="orders-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>Product Name</th>
+              <th>Status</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {orders.map((order) => (
+              <tr key={order._id}>
+                <td className="orders-id">{order._id}</td>
+                <td className="orders-customer">{order.buyer?.name || "Unknown"}</td>
+                <td className="orders-product">
+                  {order.products?.map((p) => p.productName).join(", ") || "No Product"}
+                </td>
+                <td className="orders-status">
+                  <span className={`status-badge status-${order.status.toLowerCase()}`}>
+                    {order.status}
+                  </span>
+                </td>
+                <td className="orders-actions">
+                  <select
+                    value={order.status}
+                    onChange={(e) => updateOrderStatus(order._id, e.target.value)}
+                    className="orders-status-select"
+                  >
+                    <option value="Pending">Pending</option>
+                    <option value="Shipped">Shipped</option>
+                    <option value="Delivered">Delivered</option>
+                    <option value="Cancelled">Cancelled</option>
+                  </select>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {orders.length === 0 && (
         <div className="orders-empty">
