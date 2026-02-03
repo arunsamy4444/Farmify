@@ -3,9 +3,6 @@
 
 A full-stack MERN application connecting farmers directly with consumers for fresh, organic produce.
 
-## 🚀 Live Demo
-**Frontend:** https://farmify-delta.vercel.app/  
-**Backend API:** https://farmify-6dut.onrender.com
 
 ## ✨ Features
 
