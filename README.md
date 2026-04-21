@@ -1,80 +1,58 @@
-```markdown
-# 🌱 Farmify - Farm Fresh Produce Marketplace
+# Farmify - Agricultural Supply Chain System
 
-A full-stack MERN application connecting farmers directly with consumers for fresh, organic produce.
+A full-stack MERN system for managing product flow, transactions, and user roles in small-scale agricultural supply chains.
 
+## Context
 
-## ✨ Features
+In many local agri-processing and distribution setups, product movement and transactions are tracked manually or across disconnected systems. This leads to poor visibility, delays, and inconsistent records.
 
-### 👥 User Features
-- **Authentication & Authorization** with JWT
-- **Browse Products** - View available farm produce
-- **Place Orders** - Select products and quantities
-- **Address Management** - Enter delivery details
-- **Secure Payments** - Integrated payment system
-- **Order History** - Track previous orders
+This system models a basic structure:
+product listing → order placement → transaction tracking → role-based management.
 
-### 👨‍💼 Admin Features
-- **User Management** - View all registered users
-- **Product Management** - Add, edit, delete products
-- **Order Management** - View and update order status
-- **Payment Tracking** - Monitor successful transactions
-- **Image Upload** - Add product pictures
+## Features
 
-## 🛠️ Tech Stack
+### User
+- Authentication (JWT-based)
+- Browse available products
+- Place orders with quantity selection
+- Manage delivery address
+- View order history
 
-- **Frontend:** React, CSS, React Router, Axios
-- **Backend:** Node.js, Express.js, MongoDB, Mongoose
-- **Authentication:** JWT, bcrypt
-- **File Upload:** Multer
-- **Hosting:** Vercel (Frontend), Render (Backend)
-- **Database:** MongoDB Atlas
+### Admin
+- Manage users
+- Add, update, delete products
+- Track and update order status
+- Monitor payments
+- Upload product images
 
-## 📦 Installation
+## System Behavior
 
-```bash
-# Clone repository
-git clone https://github.com/arunsamy4444/Farmify.git
+- Products are listed and stored in a centralized database
+- Orders create structured transaction records
+- Admin controls inventory and order flow
+- Users interact through a controlled interface with role-based access
 
-# Install dependencies
-cd client && npm install
-cd ../server && npm install
+## Use Case
 
-# Environment setup
-# Add .env files with required variables
-```
+A small agricultural distributor or group can:
+- Digitize product listings and availability
+- Track incoming orders in a structured way
+- Maintain transaction records instead of manual logs
+- Manage operations through a centralized system
 
-## 🔧 Environment Variables
+This reduces reliance on fragmented record-keeping and improves visibility of product flow.
 
-### Frontend (.env)
-```env
-REACT_APP_BASE_URL=your_backend_url
-```
+## Tech Stack
 
-### Backend (.env)
-```env
-MONGO_URI=your_mongodb_uri
-JWT_SECRET=your_jwt_secret
-PORT=5000
-```
+Frontend: React, CSS, React Router, Axios  
+Backend: Node.js, Express  
+Database: MongoDB (Atlas)  
+Auth: JWT, bcrypt  
+File Upload: Multer  
+Hosting: Vercel (frontend), Render (backend)
 
-## 🎯 Key Functionalities
+## Notes
 
-- **Role-based Access Control** (Admin/User)
-- **Image Upload & Management**
-- **RESTful API Architecture**
-- **Responsive Design**
-- **Real-time Order Updates**
-- **Secure Payment Processing**
-
-## 📱 Usage
-
-1. **Users** can sign up, browse products, and place orders
-2. **Admins** can manage inventory, users, and orders
-3. **Secure authentication** protects user data
-4. **Mobile-responsive** design for all devices
-
----
-
-*Connecting Farmers & Consumers Directly 🌾*
-```
+- Designed as a prototype for supply chain digitization
+- Focused on core transaction and role management flows
+- Deployed on free-tier services; backend may experience cold starts due to inactivity
